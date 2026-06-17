@@ -1,98 +1,210 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import React, { useState } from "react";
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+export default function App() {
+  const [modelo, setModelo] = useState("");
+  const [marca, setMarca] = useState("");
+  const [ano, setAno] = useState("");
+  const [pneu, setPneu] = useState("");
+  const [calibragem, setCalibragem] = useState("");
+  const [peso, setPeso] = useState("");
+  const [combustivel, setCombustivel] = useState("");
+  const [km, setKm] = useState("");
+  const [resultado, setResultado] = useState<any>(null);
 
-export default function HomeScreen() {
+  const analisar = () => {
+    let consumo = 12;
+    let saude = 95; 
+    let desempenho = "Bom";
+    let categoria = "Uso Urbano";
+  
+    if (combustivel.toLowerCase() === "etanol") {
+      consumo = 8;
+    } else if (combustivel.toLowerCase() === "diesel") {
+      consumo = 15;
+    }
+
+    if (Number(peso) > 1500) {
+      consumo -= 2;
+      desempenho = "Médio";
+      categoria = "SUV";
+    }
+  
+    if (Number(km) > 100000) {
+      saude = 75;
+    } else if (Number(km) > 50000) {
+      saude = 85;
+    }
+  
+    if (Number(calibragem) < 28) {
+      consumo -= 1;
+    }
+  
+    setResultado({
+      desempenho,
+      saude: `${saude}%`,
+      consumo: `${consumo} km/L`,
+      categoria,
+    });
+  };
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+    <ScrollView style={styles.container}>
+      <Text style={styles.titulo}>🏎 Simulador Automotivo</Text>
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+      <View style={styles.card}>
+        <TextInput
+          style={styles.input}
+          placeholder="Modelo do carro"
+          placeholderTextColor="#999"
+          value={modelo}
+          onChangeText={setModelo}
+        />
+
+        <TextInput
+          style={styles.input}
+          placeholder="Marca"
+          placeholderTextColor="#999"
+          value={marca}
+          onChangeText={setMarca}
+        />
+
+        <TextInput
+          style={styles.input}
+          placeholder="Ano"
+          keyboardType="numeric"
+          placeholderTextColor="#999"
+          value={ano}
+          onChangeText={setAno}
+        />
+
+        <TextInput
+          style={styles.input}
+          placeholder="Tipo de pneu"
+          placeholderTextColor="#999"
+          value={pneu}
+          onChangeText={setPneu}
+        />
+
+        <TextInput
+          style={styles.input}
+          placeholder="Calibragem (PSI)"
+          keyboardType="numeric"
+          placeholderTextColor="#999"
+          value={calibragem}
+          onChangeText={setCalibragem}
+        />
+
+        <TextInput
+          style={styles.input}
+          placeholder="Combustível"
+          placeholderTextColor="#999"
+          value={combustivel}
+          onChangeText={setCombustivel}
+        />
+
+        <TextInput
+          style={styles.input}
+          placeholder="Quilometragem"
+          keyboardType="numeric"
+          placeholderTextColor="#999"
+          value={km}
+          onChangeText={setKm}
+        />
+
+        <TouchableOpacity style={styles.botao} onPress={analisar}>
+          <Text style={styles.textoBotao}>🔍 Analisar Veículo</Text>
+        </TouchableOpacity>
+      </View>
+
+      {resultado && (
+        <View style={styles.relatorio}>
+          <Text style={styles.tituloRelatorio}>
+            📊 Relatório do Veículo
+          </Text>
+
+          <Text style={styles.item}>🚗 {marca} {modelo}</Text>
+          <Text style={styles.item}>📅 Ano: {ano}</Text>
+          <Text style={styles.item}>⚡ Desempenho: {resultado.desempenho}</Text>
+          <Text style={styles.item}>🔧 Saúde do Motor: {resultado.saude}</Text>
+          <Text style={styles.item}>⛽ Consumo: {resultado.consumo}</Text>
+          <Text style={styles.item}>🏁 Categoria: {resultado.categoria}</Text>
+        </View>
+      )}
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  container: {
+    flex: 1,
+    backgroundColor: "#121212",
+    paddingTop: 50,
   },
-  stepContainer: {
-    gap: 8,
+
+  titulo: {
+    color: "#ff3b3b",
+    fontSize: 30,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginBottom: 20,
+  },
+
+  card: {
+    margin: 15,
+    padding: 20,
+    backgroundColor: "#1e1e1e",
+    borderRadius: 20,
+  },
+
+  input: {
+    backgroundColor: "#2c2c2c",
+    color: "#fff",
+    padding: 15,
+    borderRadius: 12,
+    marginBottom: 12,
+  },
+
+  botao: {
+    backgroundColor: "#ff3b3b",
+    padding: 16,
+    borderRadius: 12,
+    marginTop: 10,
+  },
+
+  textoBotao: {
+    color: "#fff",
+    textAlign: "center",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+
+  relatorio: {
+    margin: 15,
+    padding: 20,
+    backgroundColor: "#1e1e1e",
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "#ff3b3b",
+  },
+
+  tituloRelatorio: {
+    color: "#ff3b3b",
+    fontSize: 22,
+    fontWeight: "bold",
+    marginBottom: 15,
+  },
+
+  item: {
+    color: "#fff",
+    fontSize: 16,
     marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
   },
 });
